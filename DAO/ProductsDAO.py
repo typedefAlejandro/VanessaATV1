@@ -8,5 +8,6 @@ class ProductsDAO():
                 FROM northwind.products
                 WHERE productname LIKE '{productName}'"""
         cursor.execute(query)
-        return cursor.fetchone()[0]
+        result = cursor.fetchone()
+        return result[0] if result else None
     

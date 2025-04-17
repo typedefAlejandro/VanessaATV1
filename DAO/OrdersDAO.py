@@ -6,7 +6,8 @@ class OrdersDAO():
     def retornaNovoIDInsercao(self, cursor):
         query = """SELECT MAX(orderid) + 1 FROM northwind.orders"""
         cursor.execute(query)
-        return cursor.fetchone()[0]
+        result = cursor.fetchone()
+        return result[0] if result else None
     
     def inserePedido(self, cursor, orderid, customerid, employeeid, orderdate):
         query = f"""INSERT INTO northwind.orders 

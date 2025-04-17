@@ -1,20 +1,20 @@
-import psycopg2
 from DAO.OrdersDAO import OrdersDAO
-from DAO.CustomersDAO import CustomersDAO
 from DAO.EmployeesDAO import EmployeesDAO
-from DAO.ProductsDAO import ProductsDAO
-from DAO.OrderDetailsDAO import OrderDetailsDAO
+from DAO.OrdersDAOORM import OrdersDAOORM
+from DAO.EmployeesDAOORM import EmployeesDAOORM
+from dbConfig import SessionLocal
+import psycopg2
 
 class RelatoriosController():
 
-    def gerarRelatoriosPedidos(self, orderID):
+    def gerarRelatoriosPedidosPsycopg(self, orderID):
         try:
             conn = psycopg2.connect(
-            dbname="northwind",
-            user="postgres",
-            password="postgres",
-            host="localhost",
-            port="5432")
+                dbname="northwind",
+                user="postgres",
+                password="postgres",
+                host="localhost",
+                port="5432")
             cursor = conn.cursor()
             
             ordersDAO = OrdersDAO()
@@ -25,8 +25,20 @@ class RelatoriosController():
             cursor.close()
             conn.close()
         except Exception as e:
-            print(f"\nERRO AO CONSULTAR PEDIDO: {e}")     
-            
+            print(f"\nERRO AO CONSULTAR PEDIDO (DRIVER): {e}")
+
+    def gerarRelatoriosPedidosAlchemy(self, orderID):
+        try:
+            session = SessionLocal()
+            ordersDAO = OrdersDAOORM(session)
+            data = ordersDAO.retornaRelatorioPedido(orderID)
+
+            self.imprimirRelatorioPedidos(data)
+
+            session.close()
+        except Exception as e:
+            print(f"\nERRO AO CONSULTAR PEDIDO (ORM): {e}")
+
     def imprimirRelatorioPedidos(self, relatorio):
         if not relatorio:
             print("\nNenhum pedido encontrado.\n")
@@ -49,15 +61,15 @@ class RelatoriosController():
             print(f"{produto:<25} {quantidade:<5} {preco_unitario:<10.2f}")
         
         print("-" * 50)
-        
-    def gerarRelatoriosFuncionariosValor(self, inicio, fim):
+
+    def gerarRelatoriosFuncionariosValorPsycopg(self, inicio, fim):
         try:
             conn = psycopg2.connect(
-            dbname="northwind",
-            user="postgres",
-            password="postgres",
-            host="localhost",
-            port="5432")
+                dbname="northwind",
+                user="postgres",
+                password="postgres",
+                host="localhost",
+                port="5432")
             cursor = conn.cursor()
             
             employeesDAO = EmployeesDAO()
@@ -68,16 +80,28 @@ class RelatoriosController():
             cursor.close()
             conn.close()
         except Exception as e:
-            print(f"\nERRO AO CONSULTAR PEDIDO: {e}")
-    
-    def gerarRelatoriosFuncionariosQuantidade(self, inicio, fim):
+            print(f"\nERRO AO CONSULTAR FUNCIONÁRIO (DRIVER): {e}")
+
+    def gerarRelatoriosFuncionariosValorAlchemy(self, inicio, fim):
+        try:
+            session = SessionLocal()
+            employeesDAO = EmployeesDAOORM(session)
+            data = employeesDAO.retornaSomaVendasFuncionarioPorIntervalo(inicio, fim)
+            
+            self.imprimirRelatorioFuncionarios(data, inicio, fim)
+
+            session.close()
+        except Exception as e:
+            print(f"\nERRO AO CONSULTAR FUNCIONÁRIO (ORM): {e}")
+
+    def gerarRelatoriosFuncionariosQuantidadePsycopg(self, inicio, fim):
         try:
             conn = psycopg2.connect(
-            dbname="northwind",
-            user="postgres",
-            password="postgres",
-            host="localhost",
-            port="5432")
+                dbname="northwind",
+                user="postgres",
+                password="postgres",
+                host="localhost",
+                port="5432")
             cursor = conn.cursor()
             
             employeesDAO = EmployeesDAO()
@@ -88,7 +112,19 @@ class RelatoriosController():
             cursor.close()
             conn.close()
         except Exception as e:
-            print(f"\nERRO AO CONSULTAR PEDIDO: {e}")
+            print(f"\nERRO AO CONSULTAR FUNCIONÁRIO (DRIVER): {e}")
+
+    def gerarRelatoriosFuncionariosQuantidadeAlchemy(self, inicio, fim):
+        try:
+            session = SessionLocal()
+            employeesDAO = EmployeesDAOORM(session)
+            data = employeesDAO.retornaSomaPedidosFuncionarioPorIntervalo(inicio, fim)
+            
+            self.imprimirRelatorioFuncionarios(data, inicio, fim)
+
+            session.close()
+        except Exception as e:
+            print(f"\nERRO AO CONSULTAR FUNCIONÁRIO (ORM): {e}")
 
     def imprimirRelatorioFuncionarios(self, relatorio, inicio, fim):
         if not relatorio:

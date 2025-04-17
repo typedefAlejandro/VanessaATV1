@@ -20,7 +20,7 @@ def view():
 def iniciarOperacoes(metodo):
     
     while True:
-        print("\nVocê deseja inserir um pedido ou gerar relatórios?")
+        print(f"\n[{metodo}] Você deseja inserir um pedido ou gerar relatórios?")
         print("Digite 1 para inserir pedidos \nDigite 2 para gerar relatórios \nDigite 3 para voltar")
         operacao = int(input("Opção: "))
     
@@ -34,25 +34,24 @@ def iniciarOperacoes(metodo):
    
 def iniciarInsercao(metodo):
     
+    companyName = input("Company name (ex: Ernst Handel, Frankenversand): ")
+    employeeName = input("Nome do vendedor (ex: Nancy Davolio, Andrew Fuller): ")
+    productName = input("Nome do produto (ex: Chai, Tofu): ")
+    quantity = int(input("Quantidade: "))
+    unitPrice = float(input("Preço unitário: "))
+    orderDate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
     if metodo == "psycopg":
-        companyName = input("Company name (ex: Ernst Handel): ")
-        employeeName = input("Nome do vendedor (ex: Nancy Davolio): ")
-        productName = input("Nome do produto (ex: Chai): ")
-        quantity = int(input("Quantidade: "))
-        unitPrice = float(input("Preço unitário: "))
-        orderDate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
         controllerPedidos = PedidosController()
-        controllerPedidos.inserePedido(companyName, employeeName, productName, quantity, unitPrice, orderDate)    
-        print("\nPedido inserido com sucesso!\n")
+        controllerPedidos.inserePedidoPsycopg(companyName, employeeName, productName, quantity, unitPrice, orderDate)    
     else:
-        #colocar insercao alchemy
-        return
+        controllerPedidos = PedidosController()
+        controllerPedidos.inserePedidoAlchemy(companyName, employeeName, productName, quantity, unitPrice, orderDate)    
     
 def gerarRelatorios(metodo):
     
     while True:
-        print("\nVocê deseja gerar relatórios de informações de pedido ou de ranking de funcionários por intervalo de tempo?")
+        print(f"\n[{metodo}] Você deseja gerar relatórios de informações de pedido ou de ranking de funcionários por intervalo de tempo?")
         print("Digite 1 para relatórios de pedidos \nDigite 2 para relatórios de funcionários \nDigite 3 para voltar")
         operacao = int(input("Opção: "))
     
@@ -70,15 +69,15 @@ def gerarRelatoriosPedidos(metodo):
     
     if metodo == "psycopg":
         controllerRelatorios = RelatoriosController()
-        controllerRelatorios.gerarRelatoriosPedidos(orderID)
+        controllerRelatorios.gerarRelatoriosPedidosPsycopg(orderID)
     else:
-        #
-        return
+        controllerRelatorios = RelatoriosController()
+        controllerRelatorios.gerarRelatoriosPedidosAlchemy(orderID)
     
 def gerarRelatoriosFuncionarios(metodo):
          
     while True:
-        print("\nVocê deseja gerar relatórios evidenciando quantidade de vendas ou valor nominal total?")
+        print(f"\n[{metodo}] Você deseja gerar relatórios evidenciando quantidade de vendas ou valor nominal total?")
         print("Digite 1 para relatórios de quantidades \nDigite 2 para relatórios de valor nominal \nDigite 3 para voltar")
         operacao = int(input("Opção: "))
    
@@ -99,10 +98,10 @@ def gerarRelatoriosFuncionariosQuantidade(metodo):
     
     if metodo == "psycopg":       
         controllerRelatorios = RelatoriosController()
-        controllerRelatorios.gerarRelatoriosFuncionariosQuantidade(inicio, fim)
+        controllerRelatorios.gerarRelatoriosFuncionariosQuantidadePsycopg(inicio, fim)
     else:
-        #
-        return
+        controllerRelatorios = RelatoriosController()
+        controllerRelatorios.gerarRelatoriosFuncionariosQuantidadeAlchemy(inicio, fim)
     
 def gerarRelatoriosFuncionariosValor(metodo):
     inicio = input("Digite a data de início (formato YYYY-MM-DD): ")
@@ -112,9 +111,9 @@ def gerarRelatoriosFuncionariosValor(metodo):
     
     if metodo == "psycopg":       
         controllerRelatorios = RelatoriosController()
-        controllerRelatorios.gerarRelatoriosFuncionariosValor(inicio, fim)
+        controllerRelatorios.gerarRelatoriosFuncionariosValorPsycopg(inicio, fim)
     else:
-        #
-        return
+        controllerRelatorios = RelatoriosController()
+        controllerRelatorios.gerarRelatoriosFuncionariosValorAlchemy(inicio, fim)
     
     

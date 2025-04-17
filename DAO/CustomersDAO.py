@@ -8,4 +8,5 @@ class CustomersDAO():
                 FROM northwind.customers
                 WHERE companyname LIKE '{companyName}'"""
         cursor.execute(query)
-        return cursor.fetchone()[0]
+        result = cursor.fetchone()
+        return result[0] if result else None

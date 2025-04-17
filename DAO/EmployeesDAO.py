@@ -9,7 +9,8 @@ class EmployeesDAO():
                 WHERE concat(firstname, ' ', lastname)
                 LIKE '{employeeName}'"""
         cursor.execute(query)
-        return cursor.fetchone()[0]
+        result = cursor.fetchone()
+        return result[0] if result else None
 
     def retornaSomaVendasFuncionarioPorIntervalo(self, cursor, inicio, fim):
         query = f"""SELECT concat(e.firstname ,' ' ,  e.lastname) as name, 
